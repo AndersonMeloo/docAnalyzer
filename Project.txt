@@ -1,0 +1,83 @@
+
+DOCANALYZER - COMANDOS DO PROJETO
+=================================
+
+Execute todos os comandos a partir da pasta raiz:
+C:\Users\ander\Documents\Projetos\docAnalyzer
+
+1. Primeira configuracao
+------------------------
+
+# Instalar as dependencias do monorepo
+npm install
+
+# Criar o arquivo de ambiente da API (se ainda nao existir)
+Copy-Item apps/api/.env.example apps/api/.env
+
+# Subir o PostgreSQL pelo Docker
+npm run db:up
+
+# Gerar o cliente Prisma e aplicar as migrations
+npm run db:generate
+npm run db:migrate
+
+
+2. Rodar o projeto
+------------------
+
+Abra 3 terminais do VS Code. Em todos eles, use primeiro:
+Set-Location C:\Users\ander\Documents\Projetos\docAnalyzer
+
+TERMINAL 1 - Banco de dados (execute uma vez):
+npm run db:up
+
+TERMINAL 2 - Backend / API:
+npm run dev:api
+
+API: http://localhost:3001/api
+
+TERMINAL 3 - Frontend / Next.js:
+npm run dev:web
+
+Frontend: http://localhost:3000
+
+Abra no navegador: http://localhost:3000
+
+
+3. Fluxo de uso
+---------------
+
+1. Acesse /register para criar uma conta.
+2. Faca login em /login.
+3. Crie um processo no painel inicial.
+4. Acesse Documentos no menu lateral.
+5. Selecione o processo, envie PDFs e abra os documentos pelo visualizador.
+
+
+4. Comandos uteis
+-----------------
+
+# Parar os containers do banco
+npm run db:down
+
+# Verificar o frontend
+npm --workspace apps/web run lint
+npm run build:web
+
+# Verificar o backend
+npm run test:api
+npm run build:api
+
+# Verificar frontend e backend juntos
+npm run build
+
+
+5. Requisitos
+-------------
+
+- Node.js 22 ou superior
+- npm 10 ou superior
+- Docker Desktop em execucao
+
+Se a API informar erro de conexao com o banco, confirme se o Docker Desktop
+esta aberto e execute novamente: npm run db:up

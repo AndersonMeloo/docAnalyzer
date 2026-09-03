@@ -1,0 +1,165 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ProcessStatus {
+  PROCESSANDO
+  EM_ANALISE
+  AGUARDANDO_REVISAO
+  CONCLUIDO
+  ARQUIVADO
+}
+
+enum DocumentProcessingStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum AnalysisStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum FindingSeverity {
+  INFO
+  WARNING
+  CRITICAL
+}
+
+enum FindingStatus {
+  UNREVIEWED
+  REVIEWED
+  IGNORED
+  CONFIRMED
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+}
+
+model User {
+  id           String    @id @default(cuid())
+  name         String
+  email        String    @unique
+  passwordHash String
+  processes    Process[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Process {
+  id          String        @id @default(cuid())
+  name        String
+  identifier  String?
+  status      ProcessStatus  @default(PROCESSANDO)
+  ownerId     String
+  owner       User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  documents   Document[]
+  summary     ProcessSummary?
+  findings    Finding[]
+  conversations Conversation[]
+  completedAt DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([ownerId, status])
+}
+
+model Document {
+  id           String   @id @default(cuid())
+  processId    String
+  process      Process  @relation(fields: [processId], references: [id], onDelete: Cascade)
+  originalName String
+  storedName   String   @unique
+  storagePath  String
+  mimeType     String
+  sizeBytes    Int
+  pageCount    Int?
+  contentHash  String?
+  processingStatus DocumentProcessingStatus @default(PENDING)
+  processingError  String?
+  processedAt      DateTime?
+  isAiProtected  Boolean  @default(false)
+  analysis       Analysis?
+  findings       Finding[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([processId, createdAt])
+}
+
+model Analysis {
+  id                   String         @id @default(cuid())
+  documentId           String         @unique
+  document             Document       @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  status               AnalysisStatus @default(PENDING)
+  summary              String?
+  extractedInformation Json?
+  attentionPoints      Json?
+  errorMessage         String?
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+}
+
+model ProcessSummary {
+  id                   String   @id @default(cuid())
+  processId            String   @unique
+  process              Process  @relation(fields: [processId], references: [id], onDelete: Cascade)
+  documentCount        Int      @default(0)
+  pageCount            Int      @default(0)
+  analyzedDocumentCount Int     @default(0)
+  pendingDocumentCount  Int     @default(0)
+  summary              String?
+  generatedAt          DateTime?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+model Finding {
+  id          String          @id @default(cuid())
+  processId   String
+  process     Process         @relation(fields: [processId], references: [id], onDelete: Cascade)
+  documentId  String?
+  document    Document?       @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  page        Int?
+  severity    FindingSeverity
+  title       String
+  description String
+  status      FindingStatus   @default(UNREVIEWED)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([processId, status, severity])
+}
+
+model Conversation {
+  id        String    @id @default(cuid())
+  processId String
+  process   Process   @relation(fields: [processId], references: [id], onDelete: Cascade)
+  messages  Message[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([processId, updatedAt])
+}
+
+model Message {
+  id             String        @id @default(cuid())
+  conversationId String
+  conversation   Conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           MessageRole
+  content        String
+  createdAt      DateTime      @default(now())
+
+  @@index([conversationId, createdAt])
+}

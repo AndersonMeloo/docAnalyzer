@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Documento fictício - Análise de consórcio</title>
+  <style>
+    @page { size: A4; margin: 18mm; }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: #1d2928; font: 14px Georgia, serif; line-height: 1.5; }
+    .page { min-height: 250mm; page-break-after: always; }
+    .page:last-child { page-break-after: auto; }
+    header { border-bottom: 2px solid #167c72; margin-bottom: 24px; padding-bottom: 12px; }
+    h1 { margin: 0; color: #125e59; font-size: 25px; }
+    h2 { margin-top: 24px; color: #125e59; font-size: 18px; }
+    h3 { margin-bottom: 6px; font-size: 15px; }
+    .eyebrow { color: #167c72; font: bold 10px Arial, sans-serif; letter-spacing: 1px; }
+    .notice { border: 1px solid #c9dfd8; background: #eef8f4; padding: 12px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 28px; }
+    .field { border-bottom: 1px solid #d6e1de; padding: 8px 0; }
+    .label { display: block; color: #647572; font: bold 10px Arial, sans-serif; text-transform: uppercase; }
+    .value { display: block; font-size: 15px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    th, td { border: 1px solid #cfdcd8; padding: 9px; text-align: left; }
+    th { background: #e8f3ef; color: #125e59; font: bold 11px Arial, sans-serif; }
+    .footer { margin-top: 42px; color: #71817e; font: 10px Arial, sans-serif; }
+    .signature { margin-top: 70px; display: flex; justify-content: space-around; text-align: center; }
+    .signature div { width: 40%; border-top: 1px solid #71817e; padding-top: 8px; }
+  </style>
+</head>
+<body>
+  <section class="page">
+    <header>
+      <span class="eyebrow">DOCUMENTO FICTÍCIO PARA TESTES</span>
+      <h1>Relatório de análise de consórcio</h1>
+      <p>Administradora Horizonte Simulada Ltda. | Documento nº CONS-TESTE-2026-014</p>
+    </header>
+    <div class="notice"><strong>AVISO:</strong> todos os nomes, números, datas e valores deste documento são inventados. Não utilizar como contrato real.</div>
+    <h2>1. Identificação da proposta</h2>
+    <div class="grid">
+      <div class="field"><span class="label">Consorciado</span><span class="value">João da Silva de Souza</span></div>
+      <div class="field"><span class="label">Código do grupo</span><span class="value">HZ-4821</span></div>
+      <div class="field"><span class="label">Cota</span><span class="value">0178</span></div>
+      <div class="field"><span class="label">Data da proposta</span><span class="value">12/08/2026</span></div>
+      <div class="field"><span class="label">Bem de referência</span><span class="value">Automóvel compacto - modelo fictício</span></div>
+      <div class="field"><span class="label">Vendedor responsável</span><span class="value">Marina Oliveira - matrícula SIM-204</span></div>
+    </div>
+    <h2>2. Condições comerciais</h2>
+    <div class="grid">
+      <div class="field"><span class="label">Crédito contratado</span><span class="value">R$ 78.500,00</span></div>
+      <div class="field"><span class="label">Prazo contratado</span><span class="value">72 meses</span></div>
+      <div class="field"><span class="label">Parcela inicial</span><span class="value">R$ 1.486,90</span></div>
+      <div class="field"><span class="label">Taxa de administração</span><span class="value">18,00% sobre o crédito</span></div>
+      <div class="field"><span class="label">Fundo de reserva</span><span class="value">2,00%</span></div>
+      <div class="field"><span class="label">Seguro</span><span class="value">Opcional, não incluído</span></div>
+    </div>
+    <p class="footer">Material criado exclusivamente para validação do DocAnalyzer.</p>
+  </section>
+
+  <section class="page">
+    <header>
+      <span class="eyebrow">DOCUMENTO FICTÍCIO PARA TESTES</span>
+      <h1>Demonstrativo de parcelas</h1>
+      <p>Grupo HZ-4821 | Cota 0178 | Consorciado: João da Silva de Souza</p>
+    </header>
+    <h2>3. Cronograma financeiro</h2>
+    <table>
+      <thead><tr><th>Parcela</th><th>Vencimento</th><th>Valor</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>001/72</td><td>10/09/2026</td><td>R$ 1.486,90</td><td>Em aberto</td></tr>
+        <tr><td>002/72</td><td>10/10/2026</td><td>R$ 1.486,90</td><td>Programada</td></tr>
+        <tr><td>003/72</td><td>10/11/2026</td><td>R$ 1.512,40</td><td>Programada</td></tr>
+        <tr><td>004/72</td><td>10/12/2026</td><td>R$ 1.512,40</td><td>Programada</td></tr>
+      </tbody>
+    </table>
+    <h2>4. Regras da contemplação</h2>
+    <p>A contemplação poderá ocorrer por sorteio ou lance, conforme as regras do grupo e a disponibilidade financeira. A análise de crédito será realizada após a contemplação.</p>
+    <div class="grid">
+      <div class="field"><span class="label">Lance mínimo informado</span><span class="value">20% do crédito</span></div>
+      <div class="field"><span class="label">Data da assembleia</span><span class="value">25/08/2026</span></div>
+      <div class="field"><span class="label">Prazo para entrega documental</span><span class="value">5 dias úteis</span></div>
+      <div class="field"><span class="label">Índice de reajuste</span><span class="value">Não informado</span></div>
+    </div>
+    <h2>5. Observações</h2>
+    <p>Este demonstrativo é uma simulação. Valores podem sofrer alterações conforme assembleias, reajustes e condições previstas no regulamento do grupo.</p>
+    <p class="footer">Material criado exclusivamente para validação do DocAnalyzer.</p>
+  </section>
+
+  <section class="page">
+    <header>
+      <span class="eyebrow">DOCUMENTO FICTÍCIO PARA TESTES</span>
+      <h1>Resumo para conferência</h1>
+      <p>Documento complementar da proposta CONS-TESTE-2026-014</p>
+    </header>
+    <h2>6. Informações declaradas</h2>
+    <table>
+      <thead><tr><th>Campo</th><th>Informação</th></tr></thead>
+      <tbody>
+        <tr><td>Nome do consorciado</td><td>João da Silva de Souza</td></tr>
+        <tr><td>Grupo e cota</td><td>HZ-4821 / 0178</td></tr>
+        <tr><td>Crédito</td><td>R$ 78.500,00</td></tr>
+        <tr><td>Prazo</td><td>60 meses</td></tr>
+        <tr><td>Parcela média</td><td>R$ 1.486,90</td></tr>
+        <tr><td>Seguro prestamista</td><td>Incluso na parcela</td></tr>
+      </tbody>
+    </table>
+    <h2>7. Checklist documental</h2>
+    <div class="field"><span class="label">Documento de identificação</span><span class="value">Pendente de conferência</span></div>
+    <div class="field"><span class="label">Comprovante de endereço</span><span class="value">Recebido em 14/08/2026</span></div>
+    <div class="field"><span class="label">Comprovante de renda</span><span class="value">Não anexado</span></div>
+    <div class="field"><span class="label">Regulamento do grupo</span><span class="value">Recebido em 12/08/2026</span></div>
+    <h2>8. Assinaturas simuladas</h2>
+    <div class="signature"><div>João da Silva de Souza<br>Consorciado</div><div>Marina Oliveira<br>Responsável pelo atendimento</div></div>
+    <p class="footer">Material criado exclusivamente para validação do DocAnalyzer. Não possui validade jurídica.</p>
+  </section>
+</body>
+</html>

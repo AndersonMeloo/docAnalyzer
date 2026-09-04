@@ -3,7 +3,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { clearConversation, ConversationMessage, createProcess, deleteProcess, DocumentSummary, fetchDocumentBlob, FindingSummary, getConversation, getProcessSummary, listDocuments, listFindings, listProcesses, logout, ProcessSummary, ProcessSummaryResult, refreshProcessSummary, sendMessage, updateFinding, uploadDocuments } from "@/lib/api";
+import { clearConversation, ConversationMessage, createProcess, deleteDocument, deleteProcess, DocumentSummary, fetchDocumentBlob, FindingSummary, getConversation, getProcessSummary, listDocuments, listFindings, listProcesses, logout, ProcessSummary, ProcessSummaryResult, refreshProcessSummary, sendMessage, updateFinding, uploadDocuments } from "@/lib/api";
 
 const navigationItems = [
   { label: "Visão geral", icon: "⌂", href: "/", active: true },
@@ -43,6 +43,7 @@ export default function Home() {
   const [documents, setDocuments] = useState<DocumentSummary[]>([]);
   const [isDocumentsLoading, setIsDocumentsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [deletingDocumentId, setDeletingDocumentId] = useState("");
   const [processSummary, setProcessSummary] = useState<ProcessSummaryResult | null>(null);
   const [isSummaryLoading, setIsSummaryLoading] = useState(false);
   const [findings, setFindings] = useState<FindingSummary[]>([]);
@@ -170,6 +171,27 @@ export default function Home() {
     setViewerUrl("");
   }
 
+  async function handleDeleteDocument(document: DocumentSummary) {
+    if (!selectedProcess || !window.confirm(`Remover o documento "${document.originalName}"?`)) return;
+    setDeletingDocumentId(document.id);
+    setError("");
+    try {
+      await deleteDocument(selectedProcess.id, document.id);
+      setDocuments((current) => current.filter((item) => item.id !== document.id));
+      setProcesses((current) => current.map((item) => item.id === selectedProcess.id ? { ...item, _count: { documents: Math.max(0, (item._count?.documents ?? 1) - 1) } } : item));
+      setProcessSummary(await getProcessSummary(selectedProcess.id));
+      if (viewerDocument?.id === document.id) {
+        if (viewerUrl) URL.revokeObjectURL(viewerUrl);
+        setViewerDocument(null);
+        setViewerUrl("");
+      }
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : "Não foi possível remover o documento.");
+    } finally {
+      setDeletingDocumentId("");
+    }
+  }
+
   async function handleFindingStatus(finding: FindingSummary, status: FindingSummary["status"]) {
     if (!selectedProcess) return;
     try { const updated = await updateFinding(selectedProcess.id, finding.id, status); setFindings((current) => current.map((item) => item.id === updated.id ? { ...item, status: updated.status } : item)); } catch (reason) { setError(reason instanceof Error ? reason.message : "Não foi possível atualizar o ponto de atenção."); }
@@ -253,13 +275,8 @@ export default function Home() {
               {isSendingMessage ? "Enviando..." : "Enviar"}
             </button>
           </form>
+          {documents.length > 0 && <section className="document-actions-panel"><div className="documents-heading"><div><span className="eyebrow accent">ARQUIVOS DO PROCESSO</span><h3>Abrir ou remover documento</h3></div></div><div className="document-actions-list">{documents.map((document) => <div className="document-action-item" key={document.id}><span>{document.originalName}</span><div><button className="text-button" onClick={() => openViewer(document)} type="button">Abrir ↗</button><button className="text-button danger-button" disabled={deletingDocumentId === document.id} onClick={() => void handleDeleteDocument(document)} type="button">{deletingDocumentId === document.id ? "Removendo..." : "Remover"}</button></div></div>)}</div></section>}
         </section>
-      )}
-
-      {selectedProcess && documents.length > 0 && (
-        <button className="viewer-launch" onClick={() => openViewer(documents[0])} type="button">
-          Abrir visualizador: {documents[0].originalName} ↗
-        </button>
       )}
 
       </section>

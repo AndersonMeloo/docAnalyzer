@@ -29,7 +29,8 @@ export class ConversationsService {
 
   async clear(ownerId: string, processId: string): Promise<{ message: string }> {
     await this.getOwnedProcess(ownerId, processId);
-    await this.prisma.conversation.deleteMany({ where: { processId } });
+    const conversations = await this.prisma.conversation.findMany({ where: { processId }, select: { id: true } });
+    await this.prisma.message.deleteMany({ where: { conversationId: { in: conversations.map((conversation) => conversation.id) } } });
     return { message: 'Conversa limpa.' };
   }
 

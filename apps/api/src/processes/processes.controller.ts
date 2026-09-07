@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { ProcessSummaryService } from '../analysis/process-summary.service';
 import { CurrentUser } from '../common/auth/current-user.decorator';
 import { JwtAuthGuard } from '../common/auth/jwt-auth.guard';
@@ -23,6 +23,16 @@ export class ProcessesController {
   @Delete(':id')
   remove(@CurrentUser() user: { userId: string }, @Param('id') id: string) {
     return this.processesService.remove(user.userId, id);
+  }
+  
+  @Patch(':id/complete')
+  complete(@CurrentUser() user: { userId: string }, @Param('id') id: string) {
+    return this.processesService.complete(user.userId, id);
+  }
+  
+  @Patch(':id/reopen')
+  reopen(@CurrentUser() user: { userId: string }, @Param('id') id: string) {
+    return this.processesService.reopen(user.userId, id);
   }
 
   @Get(':id')

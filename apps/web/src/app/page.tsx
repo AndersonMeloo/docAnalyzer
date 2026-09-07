@@ -3,7 +3,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { clearConversation, ConversationMessage, createProcess, deleteDocument, deleteProcess, DocumentSummary, fetchDocumentBlob, FindingSummary, getConversation, getProcessSummary, listDocuments, listFindings, listProcesses, logout, ProcessSummary, ProcessSummaryResult, refreshProcessSummary, sendMessage, updateFinding, uploadDocuments } from "@/lib/api";
+import { clearConversation, completeProcess, ConversationMessage, createProcess, deleteDocument, deleteProcess, DocumentSummary, fetchDocumentBlob, FindingSummary, getConversation, getProcessSummary, listDocuments, listFindings, listProcesses, logout, ProcessSummary, ProcessSummaryResult, refreshProcessSummary, reopenProcess, sendMessage, updateFinding, uploadDocuments } from "@/lib/api";
 
 const navigationItems = [
   { label: "Visão geral", icon: "⌂", href: "/", active: true },
@@ -116,6 +116,30 @@ export default function Home() {
       setDeletingProcessId("");
     }
   }
+  
+  async function handleProcessCompletion() {
+    if (!selectedProcess || !window.confirm(`Finalizar o processo "${selectedProcess.name}"? Você poderá reabri-lo depois.`)) return;
+    setError("");
+    try {
+      const updated = await completeProcess(selectedProcess.id);
+      setSelectedProcess(updated);
+      setProcesses((current) => current.map((item) => item.id === updated.id ? updated : item));
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : "Não foi possível finalizar o processo.");
+    }
+  }
+  
+  async function handleProcessReopen() {
+    if (!selectedProcess) return;
+    setError("");
+    try {
+      const updated = await reopenProcess(selectedProcess.id);
+      setSelectedProcess(updated);
+      setProcesses((current) => current.map((item) => item.id === updated.id ? updated : item));
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : "Não foi possível reabrir o processo.");
+    }
+  }
 
   async function handleLogout() {
     setError("");
@@ -205,7 +229,7 @@ export default function Home() {
 
   async function handleUpload(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!selectedProcess) return;
+    if (!selectedProcess || selectedProcess.status === "CONCLUIDO") return;
     const input = event.currentTarget.elements.namedItem("documents") as HTMLInputElement;
     const files = Array.from(input.files ?? []);
     if (!files.length) return;
@@ -276,6 +300,7 @@ export default function Home() {
             </button>
           </form>
           {documents.length > 0 && <section className="document-actions-panel"><div className="documents-heading"><div><span className="eyebrow accent">ARQUIVOS DO PROCESSO</span><h3>Abrir ou remover documento</h3></div></div><div className="document-actions-list">{documents.map((document) => <div className="document-action-item" key={document.id}><span>{document.originalName}</span><div><button className="text-button" onClick={() => openViewer(document)} type="button">Abrir ↗</button><button className="text-button danger-button" disabled={deletingDocumentId === document.id} onClick={() => void handleDeleteDocument(document)} type="button">{deletingDocumentId === document.id ? "Removendo..." : "Remover"}</button></div></div>)}</div></section>}
+          {selectedProcess && <section className="process-completion-panel"><div><span className="eyebrow accent">STATUS DO PROCESSO</span><h3>{selectedProcess.status === "CONCLUIDO" ? "Processo finalizado" : "Processo em andamento"}</h3><p>{selectedProcess.status === "CONCLUIDO" ? "Os documentos continuam disponíveis para consulta. Reabra quando quiser continuar a análise." : "Finalize quando terminar a revisão. Você poderá reabrir este processo depois."}</p></div>{selectedProcess.status === "CONCLUIDO" ? <button className="outline-button" onClick={() => void handleProcessReopen()} type="button">Reabrir processo</button> : <button className="primary-button" onClick={() => void handleProcessCompletion()} type="button">Finalizar processo</button>}</section>}
         </section>
       )}
 

@@ -112,6 +112,14 @@ export function createProcess(name: string, identifier?: string): Promise<Proces
 export function deleteProcess(processId: string): Promise<ApiMessage> {
   return request<ApiMessage>(`/processes/${processId}`, { method: "DELETE" });
 }
+ 
+export function completeProcess(processId: string): Promise<ProcessSummary> {
+  return request<ProcessSummary>(`/processes/${processId}/complete`, { method: "PATCH" });
+}
+ 
+export function reopenProcess(processId: string): Promise<ProcessSummary> {
+  return request<ProcessSummary>(`/processes/${processId}/reopen`, { method: "PATCH" });
+}
 
 export function listDocuments(processId: string): Promise<DocumentSummary[]> {
   return request<DocumentSummary[]>(`/processes/${processId}/documents`);

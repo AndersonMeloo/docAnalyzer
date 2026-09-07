@@ -35,4 +35,22 @@ export class ProcessesService {
     await Promise.all(process.documents.map((document) => unlink(document.storagePath).catch(() => undefined)));
     return { message: 'Processo removido.' };
   }
+  
+  async complete(ownerId: string, processId: string) {
+    await this.findOwned(ownerId, processId);
+    return this.prisma.process.update({
+      where: { id: processId },
+      data: { status: ProcessStatus.CONCLUIDO, completedAt: new Date() },
+      include: { _count: { select: { documents: true } } }
+    });
+  }
+  
+  async reopen(ownerId: string, processId: string) {
+    await this.findOwned(ownerId, processId);
+    return this.prisma.process.update({
+      where: { id: processId },
+      data: { status: ProcessStatus.EM_ANALISE, completedAt: null },
+      include: { _count: { select: { documents: true } } }
+    });
+  }
 }

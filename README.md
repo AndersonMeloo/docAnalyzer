@@ -160,6 +160,3 @@ Defina `GEMINI_API_KEY` somente em `apps/api/.env`. A variável `GEMINI_MODEL` p
 
 O endpoint autenticado `GET /api/ai/status` informa apenas o nome do provedor e se ele está configurado. A API pode iniciar sem chave, mas chamadas reais à IA serão recusadas até que `GEMINI_API_KEY` seja preenchida.
 
-## Próximas etapas
-
-A próxima etapa é o dashboard funcional com criação, listagem e visualização de processos. Upload, armazenamento privado, análise de documentos e Gemini serão adicionados somente nas etapas seguintes.

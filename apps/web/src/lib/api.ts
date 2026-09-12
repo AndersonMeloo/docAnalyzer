@@ -105,6 +105,10 @@ export function listProcesses(): Promise<ProcessSummary[]> {
   return request<ProcessSummary[]>("/processes");
 }
 
+export function getProcess(processId: string): Promise<ProcessSummary> {
+  return request<ProcessSummary>(`/processes/${processId}`);
+}
+
 export function createProcess(name: string, identifier?: string): Promise<ProcessSummary> {
   return request<ProcessSummary>("/processes", { method: "POST", body: JSON.stringify({ name, identifier: identifier || undefined }) });
 }
